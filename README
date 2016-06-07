@@ -1,0 +1,68 @@
+Introduction
+------------
+
+This is the emacs mode for reading feeds from an owncloud instance
+running the News app.  The following features are currently supported:
+
+- fetching unread articles
+
+- explicitly marking articles as read
+
+- adding new feeds
+
+Requirements
+------------
+
+* emacs 24 or greater is required.  Older versions might work, but
+  owncloud-news.el depends on json.el.  If you are using an older
+  emacs version, get json.el and arrange so it is loaded before
+  owncloud-news.el.
+
+* /usr/bin/curl.  owncloud-news.el uses curl to talk to the owncloud
+  News REST API.
+
+* /usr/bin/elinks.  owncloud-news.el uses elinks to render articles as
+  text.
+
+Installation
+------------
+
+* Add the directory containing owncloud-news.el to your load-path
+
+* Add this to your emacs initialization:
+
+    (require 'owncloud-news)
+
+* Set owncloud-news-path to point to the URL for the News API in your
+  owncloud instance.  This will be something like
+  https://<hostname>/index.php/apps/news/api/v1-2
+
+Authentication
+--------------
+
+owncloud-news.el relies on authentication being configured in
+~/.netrc.  You need to have an entry of the form:
+
+  machine <hostname-for-owncloud>
+    login <username>
+    password <password>
+
+in your ~/.netrc file.
+
+Usage
+-----
+
+Run M-x oc-news to fetch all unread articles.  Articles get rendered
+into a buffer derived from org-mode.  You can use <TAB> to expand
+articles.
+
+If an article has images, you can run M-x oc-news/render (bound to C-c
+C-b by default) to render the article content as HTML.
+
+The URL for the article can be opened in a browser by running M-x
+oc-news/open-in-browser (bound to C-c C-u by default).  This uses
+browse-url to run a browser, so the configuration of that will decide
+which browser is run.
+
+To mark articles as read, set region around the articles to be marked,
+and run M-x oc-news-done.
