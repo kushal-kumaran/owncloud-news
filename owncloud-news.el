@@ -132,11 +132,17 @@
 (defun oc-news/render-body(item)
   (with-temp-buffer
     (insert (gethash "body" item))
-    (call-process-region
-     (point-min) (point-max)
-     "/usr/bin/elinks" t t t
-     "-dump" "1")
-    (buffer-string)))
+    (let ((item-dom (libxml-parse-html-region (point-min) (point-max)))
+	  (item-str nil))
+      (erase-buffer)
+      (goto-char (point-min))
+      (shr-insert-document item-dom)
+      (setq item-str (replace-regexp-in-string "^" " " (buffer-string)))
+      (if (and
+	   (> (length item-str) 0)
+	   (equal (substring item-str -1) "\n"))
+	  item-str
+	(concat item-str "\n")))))
 
 (defun oc-news()
   (interactive)
